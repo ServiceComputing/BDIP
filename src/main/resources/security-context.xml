@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+        xmlns:sec="http://www.springframework.org/schema/security"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+        http://www.springframework.org/schema/security
+        http://www.springframework.org/schema/security/spring-security-4.2.xsd">
+    <!-- 配置不过滤的资源（静态资源及登录相关） -->
+    <sec:http pattern="/**/*.css" security="none"></sec:http>
+    <sec:http pattern="/**/*.jpg" security="none"></sec:http>
+    <sec:http pattern="/**/*.jpeg" security="none"></sec:http>
+    <sec:http pattern="/**/*.gif" security="none"></sec:http>
+    <sec:http pattern="/**/*.png" security="none"></sec:http>
+    <sec:http pattern="/**/*.js" security="none"></sec:http>
+    <sec:http pattern="/**/*.ttf" security="none"></sec:http>
+    <sec:http pattern="/**/*.woff" security="none"></sec:http>
+    <sec:http pattern="/**/*.ico" security="none"></sec:http>
+
+    <sec:http pattern="/login.do" security="none"></sec:http>
+
+    <sec:http auto-config='true'>
+        <sec:intercept-url pattern="/**/process.jsp" access="hasRole('ADMIN')" />
+        <sec:intercept-url pattern="/**" access="hasRole('USER')" />
+
+        <sec:form-login login-page="/login.do"
+                        login-processing-url="/syslogin.do"
+                        authentication-failure-url="/login.do?msg=msg"
+                        default-target-url="/pages/index10.jsp"
+                        username-parameter="username"
+                        password-parameter="password"/>
+        <sec:csrf disabled="true"/>
+    </sec:http>
+
+    <sec:authentication-manager>
+        <sec:authentication-provider>
+            <sec:user-service>
+                <sec:user name="admin" password="123" authorities="ROLE_USER, ROLE_ADMIN" />
+                <sec:user name="user" password="123" authorities="ROLE_USER" />
+            </sec:user-service>
+        </sec:authentication-provider>
+    </sec:authentication-manager>
+</beans>
